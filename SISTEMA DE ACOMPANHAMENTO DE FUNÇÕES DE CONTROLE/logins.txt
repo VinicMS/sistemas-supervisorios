@@ -1,0 +1,7 @@
+Nível Engenharia
+	Login: eng
+	Senha: eng
+
+Nível Operador
+	Login: ope
+	Senha: ope

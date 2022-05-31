@@ -1,0 +1,138 @@
+//{{V2}}
+FUNCTION FC4
+TITLE= <Title of FC>
+
+
+AUTHOR:
+FAMILY:nb
+NAME:nb
+VERSION:1.0
+
+
+VAR_INPUT
+       Setpoint:REAL 
+       PV:REAL 
+       Kp:REAL 
+       Ki:REAL 
+       Kd:REAL 
+       Reset:BOOL 
+END_VAR
+
+VAR_OUTPUT
+       MV:REAL 
+END_VAR
+
+VAR_IN_OUT
+END_VAR
+
+VAR_TEMP
+       erro:REAL 
+       Gkp:REAL 
+       GKi:REAL 
+       GKd:REAL 
+       soma_integral:REAL 
+       erro1:REAL 
+       delta:REAL 
+       saidaKi:REAL 
+END_VAR
+BEGIN
+
+NETWORK
+TITLE=Calculo do Erro (Set point - PV)
+//{{k}}
+
+       L    #Setpoint
+       L    #PV  
+       -R  
+       T    #erro  
+       NOP  0
+NETWORK
+TITLE=Cálculo da Ação proporcional armazenada em MD604
+//{{k}}
+
+       L    #Kp
+       L    #erro
+       *R
+       T    #GKp
+       NOP  0
+NETWORK
+TITLE=Cálculo da Ação integral armazenada em MD608 - Somatório
+//{{k}}
+
+       L    #erro
+       L    #soma_integral
+       +R
+       T    #soma_integral
+       AN   OV
+       SAVE
+       CLR
+       A    BR
+       JNB  _001
+       L    #Ki
+       L    #soma_integral
+       *R
+       T    #GKi
+_001  :NOP  0
+NETWORK
+TITLE=Cálculo da Ação derivativa armazenada em MD612
+//{{k}}
+
+       L    #erro
+       L    #erro1
+       -R
+       T    #delta
+       AN   OV
+       SAVE
+       CLR
+       A    BR
+       JNB  _002
+       L    #Kd
+       L    #delta
+       *R
+       T    #GKd
+_002  :NOP  0
+NETWORK
+TITLE=Erro anterior (uma amostra atrás)
+//{{k}}
+
+       L    #erro
+       T    #erro1
+       NOP  0
+
+NETWORK
+TITLE=Saída do Controlador PI
+//{{k}}
+
+       L    #GKp
+       L    #GKi
+       +R
+       T    #saidaKi
+       NOP  0
+NETWORK
+TITLE=Saída do Controlador PID
+//{{k}}
+
+       L    #saidaKi
+       L    #GKd
+       +R
+       T    #MV
+       NOP  0
+NETWORK
+TITLE=
+//{{k}}
+
+       A    #Reset
+       JNB  _004
+       L    0.0
+       T    #soma_integral
+_004  :NOP  0
+NETWORK
+TITLE= 
+//{{k}}
+
+       A    #Reset
+       JNB  _003
+       L    0.0
+       T    #PV
+_003  :NOP  0
+END_FUNCTION

@@ -1,0 +1,138 @@
+//{{V2}}
+FUNCTION FC3
+TITLE= <Title of FC>
+
+
+AUTHOR:Luiz
+FAMILY:nb
+NAME:PID
+VERSION:1.0
+
+
+VAR_INPUT
+       Set_point1:REAL //Valor desejado
+       PV1:REAL //Variável de Processo
+       Kp1:REAL //Ganho proporcional
+       Ki1:REAL //Ganho Integral
+       Kd1:REAL //Ganho Derivativo
+       Reset1:BOOL 
+END_VAR
+
+VAR_OUTPUT
+       MV1:REAL // Saída do PID
+END_VAR
+
+VAR_IN_OUT
+END_VAR
+
+VAR_TEMP
+       erro1:REAL 
+       GKp1:REAL 
+       GKi1:REAL 
+       GKd1:REAL 
+       soma_integral1:REAL 
+       erro11:REAL 
+       delta1:REAL 
+       saida_Ki1:REAL 
+END_VAR
+BEGIN
+
+NETWORK
+TITLE=Calculo do Erro (Set point - PV)
+//{{k}}
+
+       L    #Set_point1
+       L    #PV1
+       -R
+       T    #erro1
+       NOP  0
+NETWORK
+TITLE=Cálculo da Ação proporcional armazenada em MD604
+//{{k}}
+
+       L    #Kp1
+       L    #erro1
+       *R
+       T    #GKp1
+       NOP  0
+NETWORK
+TITLE=Cálculo da Ação integral armazenada em MD608 - Somatório
+//{{k}}
+
+       L    #erro1
+       L    #soma_integral1
+       +R
+       T    #soma_integral1
+       AN   OV
+       SAVE
+       CLR
+       A    BR
+       JNB  _002
+       L    #Ki1
+       L    #soma_integral1
+       *R
+       T    #GKi1
+_002  :NOP  0
+NETWORK
+TITLE=Cálculo da Ação derivativa armazenada em MD612
+//{{k}}
+
+       L    #erro1
+       L    #erro11
+       -R
+       T    #delta1
+       AN   OV
+       SAVE
+       CLR
+       A    BR
+       JNB  _001
+       L    #Kd1
+       L    #delta1
+       *R
+       T    #GKd1
+_001  :NOP  0
+NETWORK
+TITLE=Erro anterior (uma amostra atrás)
+//{{k}}
+
+       L    #erro1
+       T    #erro11
+       NOP  0
+
+NETWORK
+TITLE=Saída do Controlador PI
+//{{k}}
+
+       L    #GKp1
+       L    #GKi1
+       +R
+       T    #saida_Ki1
+       NOP  0
+NETWORK
+TITLE=Saída do Controlador PID
+//{{k}}
+
+       L    #saida_Ki1
+       L    #GKd1
+       +R
+       T    #MV1
+       NOP  0
+NETWORK
+TITLE= 
+//{{k}}
+
+       A    #Reset1
+       JNB  _004
+       L    0.0
+       T    #soma_integral1
+_004  :NOP  0
+NETWORK
+TITLE=
+//{{k}}
+
+       A    #Reset1
+       JNB  _003
+       L    0.0
+       T    #PV1
+_003  :NOP  0
+END_FUNCTION

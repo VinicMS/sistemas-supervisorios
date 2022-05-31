@@ -1,0 +1,163 @@
+//{{V2}}
+FUNCTION FC2
+TITLE= <Title of FC>
+
+
+AUTHOR:
+FAMILY:nb
+NAME:nb
+VERSION:1.0
+
+
+VAR_INPUT
+       MV:REAL //Entrada da planta de 2 ordem
+       Reset:BOOL 
+       CPV1:REAL //Coeficiente vezes pv(k-1)
+       CPV2:REAL //Coeficiente vezes pv(k-2)
+       CMV1:REAL //Coeficiente vezes mv(k-1)
+       CMV2:REAL //Coeficiente vezes mv(k-2)
+END_VAR
+
+VAR_OUTPUT
+       PV:REAL //Saída da PLanta de 2 ordem
+END_VAR
+
+VAR_IN_OUT
+END_VAR
+
+VAR_TEMP
+END_VAR
+BEGIN
+
+NETWORK
+TITLE=   Termo relativa à PV em um momento anterior
+//{{k}}
+
+       L    #CPV1
+       L    MD        46
+       *R
+       T    MD        200
+       NOP  0
+NETWORK
+TITLE=Termo relativa à PV em dois momentos anterior
+//{{k}}
+
+       L    #CPV2
+       L    MD        50
+       *R
+       T    MD        204
+       NOP  0
+NETWORK
+TITLE=Termo relativa à MV em um momento anterior
+//{{k}}
+
+       L    #CMV1
+       L    MD        34
+       *R
+       T    MD        208
+       NOP  0
+NETWORK
+TITLE=   Termo relativa à MV em dois momentos anterior
+//{{k}}
+
+       L    #CMV2
+       L    MD        38
+       *R
+       T    MD        212
+       NOP  0
+NETWORK
+TITLE=Soma dos termos de PV
+//{{k}}
+
+       L    MD        200
+       L    MD        204
+       +R
+       T    MD        216
+       NOP  0
+NETWORK
+TITLE=Soma dos termos de MV
+//{{k}}
+
+       L    MD        208
+       L    MD        212
+       +R
+       T    MD        220
+       NOP  0
+NETWORK
+TITLE=Saída atual da planta de segunda ordem
+//{{k}}
+
+       L    MD        216
+       L    MD        220
+       +R
+       T    MD        42
+       NOP  0
+NETWORK
+TITLE=
+//{{k}}
+
+       L    MD        34
+       T    MD        38
+       NOP  0
+
+NETWORK
+TITLE=
+//{{k}}
+
+       L    #MV
+       T    MD        34
+       NOP  0
+
+NETWORK
+TITLE=
+//{{k}}
+
+       L    MD        46
+       T    MD        50
+       NOP  0
+
+NETWORK
+TITLE=
+//{{k}}
+
+       L    MD        42
+       T    MD        46
+       NOP  0
+
+NETWORK
+TITLE=
+//{{k}}
+
+       A    #Reset
+       JNB  _002
+       L    0.0
+       T    MD        34
+_002  :NOP  0
+NETWORK
+TITLE=
+//{{k}}
+
+       A    #Reset
+       JNB  _003
+       L    0.0
+       T    MD        38
+_003  :NOP  0
+NETWORK
+TITLE=
+//{{k}}
+
+       A    #Reset
+       JNB  _004
+       L    0.0
+       T    MD        46
+_004  :NOP  0
+NETWORK
+TITLE= 
+//{{k}}
+
+       A    #Reset
+       JNB  _001
+       L    0.0
+       T    MD        50
+_001  :NOP  0
+END_FUNCTION

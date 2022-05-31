@@ -1,0 +1,132 @@
+//{{V2}}
+ORGANIZATION_BLOCK OB1
+TITLE= "Cyclic main program"
+
+
+AUTHOR:Luiz
+FAMILY:nb
+NAME:PID
+VERSION:1.0
+
+
+VAR_TEMP
+       OB1_EV_CLASS:BYTE //Bits 0-3 = 1 (Coming event), Bits 4-7 = 1 (Event class 1)
+       OB1_SCAN_1:BYTE //1 (Cold restart scan 1 of OB 1), 3 (Scan 2-n of OB 1)
+       OB1_PRIORITY:BYTE //1 (Priority of 1 is lowest)
+       OB1_OB_NUMBR:BYTE //1 (Organization block 1, OB1)
+       OB1_RESERVED_1:BYTE //Reserved for system
+       OB1_RESERVED_2:BYTE //Reserved for system
+       OB1_PREV_CYCLE:INT //Cycle time of previous OB1 scan (milliseconds)
+       OB1_MIN_CYCLE:INT //Minimum cycle time of OB1 (milliseconds)
+       OB1_MAX_CYCLE:INT //Maximum cycle time of OB1 (milliseconds)
+       OB1_DATE_TIME:DATE_AND_TIME //Date and time OB1 started
+END_VAR
+BEGIN
+
+NETWORK
+TITLE= 
+//{{k}}
+
+       AN   M      2000.0
+       L    S5T#50MS
+       SD   T0
+       NOP  0
+       NOP  0
+       NOP  0
+       A    T0
+       =    M      2000.0
+NETWORK
+TITLE= 
+//{{k}}
+
+       A    M2000.2
+       =    L        20.0
+       BLD  103
+       A    M      2000.0
+       A    M      2000.1
+       JNB  _003
+       CALL FC3
+         Set_point1:=MD0
+         PV1:=MD8
+         Kp1:=MD500
+         Ki1:=MD504
+         Kd1:=MD508
+         Reset1:=L20.0        
+         MV1:=MD524
+_003:  NOP  0
+NETWORK
+TITLE=
+//{{k}}
+
+       AN   M      2000.1
+       JNB  _004
+       L    MD           0
+       T    MD         524
+_004  :NOP  0
+NETWORK
+TITLE=
+//{{k}}
+//Função de transferência da planta de primeira ordem -> G(s) = 1 / (s +1)
+//Discretizada com tempo de 5ms.
+
+       A    M2000.2
+       =    L        20.0
+       BLD  103
+       A    M      2000.0
+       JNB  _001
+       CALL FC1
+         MV:=MD524
+         Reset:=L20.0        
+         C1_PV:=0.995
+         C2_MV:=0.005
+         PV:=MD8
+_001:  NOP  0
+NETWORK
+TITLE= 
+//{{k}}
+
+       A    M      2000.4
+       =    L        20.0
+       BLD  103
+       A    M      2000.0
+       A    M      2000.3
+       JNB  _005
+       CALL FC4
+         Setpoint:=MD30
+         PV:=MD42
+         Kp:=MD512
+         Ki:=MD516
+         Kd:=MD520
+         Reset:=L20.0        
+         MV:=MD550
+_005  :NOP  0
+NETWORK
+TITLE=
+//{{k}}
+
+       AN   M2000.3
+       JNB  _006
+       L    MD          30
+       T    MD         550
+_006:  NOP  0
+NETWORK
+TITLE=
+//{{k}}
+//Função de transferência da planta de segunda ordem -> G(s) = 50 / (s^2 + s + 100)
+//Discretizada com tempo de 50ms.
+
+       A    M      2000.4
+       =    L        20.0
+       BLD  103
+       A    M      2000.0
+       JNB  _002
+       CALL FC2
+         MV:=MD550
+         Reset:=L20.0        
+         CPV1:=1.7123
+         CPV2:=-0.9512
+         CMV1:=0.0602
+         CMV2:=0.0592
+         PV:=MD42
+_002:  NOP  0
+END_ORGANIZATION_BLOCK

@@ -1,0 +1,8 @@
+@066MD0              REAL             0.000000e+00     Variável manipulada atual da planta 1
+@083MD30             REAL             0.000000e+00     Variável manipulada atual da planta 2
+@032MD524            REAL                              Saída do bloco PID da planta 1 ordem
+@083MD550            REAL             5.000000e+01     Saída do bloco PID da planta 2 ordem
+@083M2000.4          BINARY           2#0              
+@083MD504            REAL             0.000000e+00     Ganho integral da Planta 1
+@083MD8              HEX              DW#16#00000000   Variável de processo atual da planta 1
+@083MD30             HEX              DW#16#00000000   Variável manipulada atual da planta 2

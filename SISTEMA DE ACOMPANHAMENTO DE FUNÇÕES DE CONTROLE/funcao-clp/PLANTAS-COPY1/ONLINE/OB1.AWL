@@ -1,0 +1,80 @@
+//{{V2}}
+ORGANIZATION_BLOCK OB1
+TITLE= "Cyclic main program"
+
+
+AUTHOR:Luiz
+FAMILY:nb
+NAME:PID
+VERSION:01.00
+
+
+VAR_TEMP
+       TEMP0:BYTE 
+       TEMP1:BYTE 
+       TEMP2:BYTE 
+       TEMP3:BYTE 
+       TEMP4:BYTE 
+       TEMP5:BYTE 
+       TEMP6:INT 
+       TEMP7:INT 
+       TEMP8:INT 
+       TEMP9:DATE_AND_TIME 
+END_VAR
+BEGIN
+
+NETWORK
+TITLE=
+//{{f}}
+
+       A    M      2000.1
+       AN   M      2000.0
+       L    S5T#50MS
+       SD   T         0
+       NOP  0
+       NOP  0
+       NOP  0
+       A    T         0
+       =    M      2000.0
+NETWORK
+TITLE=
+//{{f}}
+
+       A    M      2000.5
+       JNB  M000
+       CALL FC4
+         Setpoint:=MD30
+         PV:=MD42
+         Kp:=MD512
+         Ki:=MD516
+         Kd:=MD520
+         MV:=MD528
+M000  :NOP  0
+NETWORK
+TITLE=
+//{{f}}
+
+       AN   M      2000.5
+       JNB  M001
+       L    MD       30
+       T    MD      528
+M001  :NOP  0
+NETWORK
+TITLE=
+//{{f}}
+
+       A    M      2000.3
+       =    L        20.0
+       BLD          103
+       A    M      2000.0
+       JNB  M002
+       CALL FC2
+         MV:=MD528
+         Reset:=L20.0        
+         CPV1:=MD54
+         CPV2:=MD58
+         CMV1:=MD62
+         CMV2:=MD66
+         PV:=MD42
+M002  :NOP  0
+END_ORGANIZATION_BLOCK

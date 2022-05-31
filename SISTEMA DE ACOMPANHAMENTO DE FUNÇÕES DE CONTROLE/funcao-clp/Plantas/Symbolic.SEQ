@@ -1,0 +1,32 @@
+Planta 1 ordem	FC     1	FC1	
+Planta 2 ordem	FC     2	FC2	
+Bloco PID	FC     3	FC3	Bloco PID construído por meio de equações a diferenças
+MV(k)_P1	MD     0	REAL	Variável manipulada atual da planta 1
+MV(k-1)_P1	MD     4	REAL	Variável manipulada anterior da planta 1
+PV(k)_P1	MD     8	REAL	Variável de processo atual da planta 1
+PV(k-1)_P1	MD    12	REAL	Variável de processo anterior da planta 1
+C_PV(k-1)	MD    20	REAL	Coeficiente aplicado ao termo anterior de PV
+C_MV(k-1)	MD    24	REAL	Coeficiente aplicado ao termo anterior de MV
+Tempo de amostragem	M 2000.0	BOOL	
+A_M_P1	M 2000.1	BOOL	
+A_M_P2	M 2000.3	BOOL	
+Reset_planta_P2	M 2000.4	BOOL	
+Reset_planta_P1	M 2000.2	BOOL	
+MV(k)_P2	MD    30	REAL	Variável manipulada atual da planta 2
+MV(k-1)_P2	MD    34	REAL	Variável manipulada anterior da planta 2
+MV(k-2)_P2	MD    38	REAL	Variável manipulada duas amostras anteriores da planta 2
+PV(k)_P2	MD    42	REAL	Variável de processo atual da planta 2
+PV(k-1)_P2	MD    46	REAL	Variável de processo anterior da planta 2
+PV(k-2)_P2	MD    50	REAL	Variável de processo duas amostras anteriores da planta 2
+C_PV(k-1)_P2	MD    54	REAL	Coeficiente aplicado ao termo anterior de PV2
+C_PV(k-2)_P2	MD    58	REAL	Coeficiente aplicado ao termo de duas amostras anteriores de PV2
+C_MV(k-1)_P2	MD    62	REAL	Coeficiente aplicado ao termo anterior de MV2
+C_MV(k-2)_P2	MD    66	REAL	Coeficiente aplicado ao termo de duas amostras anterior de MV2
+Kp_P1	MD   500	REAL	Ganho proporcional da PLanta 1
+Ki_P1	MD   504	REAL	Ganho integral da Planta 1
+Kd_P1	MD   508	REAL	Ganho derivativo da Planta 1
+Kp_P2	MD   512	REAL	Ganho proporcional da Planta 2
+Ki_P2	MD   516	REAL	Ganho integral da Planta 2
+Kd_P2	MD   520	REAL	Ganho derivativo da Planta 2.
+Saída PID P1	MD   524	REAL	Saída do bloco PID da planta 1 ordem
+Saída PID P2	MD   550	REAL	Saída do bloco PID da planta 2 ordem

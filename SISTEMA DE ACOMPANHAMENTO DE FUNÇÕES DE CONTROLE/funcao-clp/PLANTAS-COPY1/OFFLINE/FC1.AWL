@@ -1,0 +1,76 @@
+//{{V2}}
+FUNCTION FC1
+TITLE= <Title of FC>
+
+
+AUTHOR:
+FAMILY:nb
+NAME:nb
+VERSION:1.0
+
+
+VAR_INPUT
+       MV:REAL 
+       Reset:BOOL 
+       C1_PV:REAL //Coeficiente 1 da planta
+       C2_MV:REAL //Coeficiente 2 da planta
+END_VAR
+
+VAR_OUTPUT
+       PV:REAL 
+END_VAR
+
+VAR_IN_OUT
+END_VAR
+
+VAR_TEMP
+END_VAR
+BEGIN
+
+NETWORK
+TITLE=Termo da equação relativo à PV em um momento anterior
+//{{k}}
+
+       L    #C1_PV
+       L    MD        12
+       *R
+       T    MD        100
+       NOP  0
+
+NETWORK
+TITLE=Termo da equação relativo à MV em um momento anterior
+//{{k}}
+
+       L    #C2_MV
+       L    MD        4
+       *R
+       T    MD        104
+       NOP  0
+
+NETWORK
+TITLE=Saída da Planta (PV atual)
+//{{k}}
+
+       L    MD        100
+       L    MD        104
+       +R
+       T    MD        8
+       NOP  0
+
+NETWORK
+TITLE=MD4 - MV um instante atrás (MV -1)
+//{{k}}
+
+       L    #MV
+       T    MD        4
+       NOP  0
+
+NETWORK
+TITLE=MD12 - PV um instante atrás (PV -1)
+//{{k}}
+
+       L    #PV
+       T    MD        12
+       NOP  0
+
+END_FUNCTION
